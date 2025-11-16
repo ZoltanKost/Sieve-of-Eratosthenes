@@ -22,17 +22,19 @@ void Calculate(uint8_t* array, uint8_t size)
     for (uint8_t i = 0; i <= size; i++)
     {
         uint8_t array_value = array[i];
-        for (int l = 0; l < 8; l++)
+        int l = 0;
+        if (i == 0) l = 2;
+        for (; l < 8; l++)
         {
-            int number = i * 8 + l + 2;
+            int number = i * 8 + l;
             
             int p = number;
             int numberToExclude = number * p;
             while (numberToExclude < size * 8)
             {
-                uint8_t exclude_index = (numberToExclude - 2) / 8;
+                uint8_t exclude_index = (numberToExclude) / 8;
                 uint8_t array_value = array[exclude_index];
-                uint8_t mask = ~(1 << (7 - (numberToExclude - 2) % 8));
+                uint8_t mask = ~(1 << (7 - (numberToExclude) % 8));
                 array_value &= mask;
                 array[exclude_index] = array_value;
                 p++;
@@ -47,14 +49,16 @@ int Analyse(uint8_t* array, uint8_t size)
     int result = 0;
     for (int i = 0; i < size; i++)
     {
+        int l = 0;
+        if (i == 0) l = 2;
         uint8_t array_value = array[i];
-        for (int l = 0; l < 8; l++)
+        for (; l < 8; l++)
         {
             bool value = (array_value >> (7 - l)) & 1;
             if (value)
             {
                 result++;
-                printf("%d,\n", i * 8 + l + 2);
+                printf("%d,\n", i * 8 + l);
             }
         }
     }
@@ -62,6 +66,6 @@ int Analyse(uint8_t* array, uint8_t size)
 }
 
 // Speicher zugriff - 8 numbers for index
-//       |2-10      |
-// index | 0        | 1| 4 | 5 | 6 | ... | 1000 |
-// value | 11010100 | 1 | 0 | 1 | 0 | ... | 0    |
+//       |    2-9   | 10-18 |
+// index | 0        | 1 | 2 | 3 | 4 | 5 | 6 | 7 |... | 1000 |
+// value | 11010100 | 1 | 0 | 1 | 0 | 1 ... | 0    |
